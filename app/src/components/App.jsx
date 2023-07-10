@@ -10,6 +10,7 @@ const initialState = {
   questions: [],
   status: "loading", //  loading | error | ready | active | finished
   index: 0, // index of the current question
+  answer: null, // the answer to the current question
 }; // initial state of the app is an empty array of questions and a status of loading
 
 function reducer(state, action) {
@@ -27,13 +28,18 @@ function reducer(state, action) {
       }; // if the data fails to load, the status is error
     case "start":
       return { ...state, status: "active" }; // when the game starts, the status is active
+    case "newAnswer":
+      return {
+        ...state,
+        answer: action.payload,
+      };
     default:
       throw new Error("Action unknown");
   }
 }
 
 function App() {
-  const [{ questions, status, index }, dispatch] = useReducer(
+  const [{ questions, status, index, answer }, dispatch] = useReducer(
     reducer,
     initialState
   ); // useReducer is a hook that allows us to manage state with a reducer function
@@ -58,7 +64,13 @@ function App() {
           <StartScreen numQuestions={numQuestions} dispatch={dispatch} />
         )}
         {/* if the status is ready, we show the start screen */}
-        {status === "active" && <Question question={questions[index]} />}
+        {status === "active" && (
+          <Question
+            question={questions[index]}
+            dispatch={dispatch}
+            answer={answer}
+          />
+        )}
         {/* if the status is active, we show the question */}
       </Main>
     </div>
