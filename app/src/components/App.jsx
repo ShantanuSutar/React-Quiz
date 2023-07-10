@@ -11,6 +11,7 @@ const initialState = {
   status: "loading", //  loading | error | ready | active | finished
   index: 0, // index of the current question
   answer: null, // the answer to the current question
+  points: 0, // the number of points the user has
 }; // initial state of the app is an empty array of questions and a status of loading
 
 function reducer(state, action) {
@@ -29,9 +30,14 @@ function reducer(state, action) {
     case "start":
       return { ...state, status: "active" }; // when the game starts, the status is active
     case "newAnswer":
+      const question = state.questions.at(state.index); // the current question is the question at the current index
       return {
         ...state,
         answer: action.payload,
+        points:
+          action.payload === question.correctOption
+            ? state.points + question.points
+            : state.points,
       };
     default:
       throw new Error("Action unknown");
