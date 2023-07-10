@@ -4,6 +4,7 @@ import Main from "./Main";
 import Loader from "./Loader";
 import Error from "./Error";
 import StartScreen from "./StartScreen";
+import Question from "./Question";
 
 const initialState = {
   questions: [],
@@ -23,6 +24,8 @@ function reducer(state, action) {
         ...state,
         status: "error",
       }; // if the data fails to load, the status is error
+    case "start":
+      return { ...state, status: "active" }; // when the game starts, the status is active
     default:
       throw new Error("Action unknown");
   }
@@ -47,8 +50,12 @@ function App() {
         {/* if the status is loading, we show the loader */}
         {status === "error" && <Error />}
         {/* if the status is error, we show the error */}
-        {status === "ready" && <StartScreen numQuestions={numQuestions} />}
+        {status === "ready" && (
+          <StartScreen numQuestions={numQuestions} dispatch={dispatch} />
+        )}
         {/* if the status is ready, we show the start screen */}
+        {status === "active" && <Question />}
+        {/* if the status is active, we show the question */}
       </Main>
     </div>
   );
