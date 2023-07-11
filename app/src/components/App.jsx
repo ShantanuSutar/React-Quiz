@@ -8,6 +8,8 @@ import Question from "./Question";
 import NextButton from "./NextButton";
 import Progress from "./Progress";
 import FinishScreen from "./FinishScreen";
+import Footer from "./Footer";
+import Timer from "./Timer";
 
 const initialState = {
   questions: [],
@@ -16,6 +18,7 @@ const initialState = {
   answer: null, // the answer to the current question
   points: 0, // the number of points the user has
   highscore: 0, // the highscore of the user
+  secondsRemaining: 10, // the number of seconds remaining
 }; // initial state of the app is an empty array of questions and a status of loading
 
 function reducer(state, action) {
@@ -61,7 +64,18 @@ function reducer(state, action) {
         index: 0,
         answer: null,
         points: 0,
+        secondsRemaining: 10,
       }; // when the restart button is clicked, the status is set to ready and the index, answer and points are reset
+
+    case "tick":
+      return {
+        ...state,
+        secondsRemaining:
+          state.status === "finished"
+            ? state.secondsRemaining
+            : state.secondsRemaining - 1,
+        status: state.secondsRemaining === 0 ? "finished" : state.status,
+      }; // when the timer ticks, the seconds remaining are decremented and the status is set to finished if the seconds remaining are 0
 
     default:
       throw new Error("Action unknown");
@@ -69,8 +83,10 @@ function reducer(state, action) {
 }
 
 function App() {
-  const [{ questions, status, index, answer, points, highscore }, dispatch] =
-    useReducer(reducer, initialState); // useReducer is a hook that allows us to manage state with a reducer function
+  const [
+    { questions, status, index, answer, points, highscore, secondsRemaining },
+    dispatch,
+  ] = useReducer(reducer, initialState); // useReducer is a hook that allows us to manage state with a reducer function
 
   const numQuestions = questions.length; // the number of questions is the length of the questions array
 
@@ -111,12 +127,15 @@ function App() {
               dispatch={dispatch}
               answer={answer}
             />
-            <NextButton
-              dispatch={dispatch}
-              answer={answer}
-              index={index}
-              numQuestions={numQuestions}
-            />
+            <Footer>
+              <Timer dispatch={dispatch} secondsRemaining={secondsRemaining} />
+              <NextButton
+                dispatch={dispatch}
+                answer={answer}
+                index={index}
+                numQuestions={numQuestions}
+              />
+            </Footer>
           </>
         )}
         {/* if the status is active, we show the question */}
