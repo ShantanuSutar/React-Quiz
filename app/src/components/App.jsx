@@ -7,6 +7,7 @@ import StartScreen from "./StartScreen";
 import Question from "./Question";
 import NextButton from "./NextButton";
 import Progress from "./Progress";
+import FinishScreen from "./FinishScreen";
 
 const initialState = {
   questions: [],
@@ -43,6 +44,10 @@ function reducer(state, action) {
       }; // when a new answer is submitted, the answer is set to the payload and the points are updated
     case "nextQuestion":
       return { ...state, index: state.index + 1, answer: null }; // when the next question is clicked, the index is incremented and the answer is set to null
+
+    case "finish":
+      return { ...state, status: "finished" }; // when the finish button is clicked, the status is set to finished
+
     default:
       throw new Error("Action unknown");
   }
@@ -93,10 +98,19 @@ function App() {
               dispatch={dispatch}
               answer={answer}
             />
-            <NextButton dispatch={dispatch} answer={answer} />
+            <NextButton
+              dispatch={dispatch}
+              answer={answer}
+              index={index}
+              numQuestions={numQuestions}
+            />
           </>
         )}
         {/* if the status is active, we show the question */}
+        {status === "finished" && (
+          <FinishScreen points={points} maxPossiblePoints={maxPossiblePoints} />
+        )}
+        {/* if the status is finished, we show the finish screen  */}
       </Main>
     </div>
   );
