@@ -11,6 +11,8 @@ import FinishScreen from "./FinishScreen";
 import Footer from "./Footer";
 import Timer from "./Timer";
 
+const SECS_PER_QUESTION = 15; // the number of seconds per question
+
 const initialState = {
   questions: [],
   status: "loading", //  loading | error | ready | active | finished
@@ -18,7 +20,7 @@ const initialState = {
   answer: null, // the answer to the current question
   points: 0, // the number of points the user has
   highscore: 0, // the highscore of the user
-  secondsRemaining: 10, // the number of seconds remaining
+  secondsRemaining: null, // the number of seconds remaining
 }; // initial state of the app is an empty array of questions and a status of loading
 
 function reducer(state, action) {
@@ -35,7 +37,11 @@ function reducer(state, action) {
         status: "error",
       }; // if the data fails to load, the status is error
     case "start":
-      return { ...state, status: "active" }; // when the game starts, the status is active
+      return {
+        ...state,
+        status: "active",
+        secondsRemaining: state.questions.length * SECS_PER_QUESTION,
+      }; // when the game starts, the status is active
     case "newAnswer":
       const question = state.questions.at(state.index); // the current question is the question at the current index
       return {
