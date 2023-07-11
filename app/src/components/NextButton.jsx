@@ -5,19 +5,22 @@ const NextButton = ({ index, dispatch, answer, numQuestions }) => {
 
   if (index < numQuestions - 1)
     return (
-      <div
+      <button
         className="btn btn-ui"
         onClick={() => dispatch({ type: "nextQuestion" })}
       >
         Next
-      </div>
+      </button>
     ); // show the next button if the index is less than the number of questions - 1
 
   if (index === numQuestions - 1)
     return (
-      <div className="btn btn-ui" onClick={() => dispatch({ type: "finish" })}>
+      <button
+        className="btn btn-ui"
+        onClick={() => dispatch({ type: "finish" })}
+      >
         Finish
-      </div>
+      </button>
     ); // show the finish button if the index is equal to the number of questions - 1
 };
 

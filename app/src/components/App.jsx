@@ -54,6 +54,15 @@ function reducer(state, action) {
           state.points > state.highscore ? state.points : state.highscore,
       }; // when the finish button is clicked, the status is set to finished
 
+    case "restart":
+      return {
+        ...state,
+        status: "ready",
+        index: 0,
+        answer: null,
+        points: 0,
+      }; // when the restart button is clicked, the status is set to ready and the index, answer and points are reset
+
     default:
       throw new Error("Action unknown");
   }
@@ -116,6 +125,7 @@ function App() {
             points={points}
             maxPossiblePoints={maxPossiblePoints}
             highscore={highscore}
+            dispatch={dispatch}
           />
         )}
         {/* if the status is finished, we show the finish screen  */}
