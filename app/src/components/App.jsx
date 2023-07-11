@@ -5,6 +5,7 @@ import Loader from "./Loader";
 import Error from "./Error";
 import StartScreen from "./StartScreen";
 import Question from "./Question";
+import NextButton from "./NextButton";
 
 const initialState = {
   questions: [],
@@ -38,7 +39,9 @@ function reducer(state, action) {
           action.payload === question.correctOption
             ? state.points + question.points
             : state.points,
-      };
+      }; // when a new answer is submitted, the answer is set to the payload and the points are updated
+    case "nextQuestion":
+      return { ...state, index: state.index + 1, answer: null }; // when the next question is clicked, the index is incremented and the answer is set to null
     default:
       throw new Error("Action unknown");
   }
@@ -71,11 +74,14 @@ function App() {
         )}
         {/* if the status is ready, we show the start screen */}
         {status === "active" && (
-          <Question
-            question={questions[index]}
-            dispatch={dispatch}
-            answer={answer}
-          />
+          <>
+            <Question
+              question={questions[index]}
+              dispatch={dispatch}
+              answer={answer}
+            />
+            <NextButton dispatch={dispatch} answer={answer} />
+          </>
         )}
         {/* if the status is active, we show the question */}
       </Main>
