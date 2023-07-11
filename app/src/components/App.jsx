@@ -15,6 +15,7 @@ const initialState = {
   index: 0, // index of the current question
   answer: null, // the answer to the current question
   points: 0, // the number of points the user has
+  highscore: 0, // the highscore of the user
 }; // initial state of the app is an empty array of questions and a status of loading
 
 function reducer(state, action) {
@@ -46,7 +47,12 @@ function reducer(state, action) {
       return { ...state, index: state.index + 1, answer: null }; // when the next question is clicked, the index is incremented and the answer is set to null
 
     case "finish":
-      return { ...state, status: "finished" }; // when the finish button is clicked, the status is set to finished
+      return {
+        ...state,
+        status: "finished",
+        highscore:
+          state.points > state.highscore ? state.points : state.highscore,
+      }; // when the finish button is clicked, the status is set to finished
 
     default:
       throw new Error("Action unknown");
@@ -54,10 +60,8 @@ function reducer(state, action) {
 }
 
 function App() {
-  const [{ questions, status, index, answer, points }, dispatch] = useReducer(
-    reducer,
-    initialState
-  ); // useReducer is a hook that allows us to manage state with a reducer function
+  const [{ questions, status, index, answer, points, highscore }, dispatch] =
+    useReducer(reducer, initialState); // useReducer is a hook that allows us to manage state with a reducer function
 
   const numQuestions = questions.length; // the number of questions is the length of the questions array
 
@@ -108,7 +112,11 @@ function App() {
         )}
         {/* if the status is active, we show the question */}
         {status === "finished" && (
-          <FinishScreen points={points} maxPossiblePoints={maxPossiblePoints} />
+          <FinishScreen
+            points={points}
+            maxPossiblePoints={maxPossiblePoints}
+            highscore={highscore}
+          />
         )}
         {/* if the status is finished, we show the finish screen  */}
       </Main>
